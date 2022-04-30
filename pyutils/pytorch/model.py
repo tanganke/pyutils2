@@ -28,3 +28,16 @@ def make_mlp(sizes: Iterable[int], activation: nn.Module = nn.ReLU, output_activ
         act = activation if j < len(sizes)-2 else output_activation
         layers += [nn.Linear(sizes[j], sizes[j+1]), act()]
     return nn.Sequential(*layers)
+
+def make_LeNet():
+    model = nn.Sequential(
+        nn.Conv2d(1, 6, kernel_size=5, padding=2), nn.ReLU(),
+        nn.MaxPool2d(kernel_size=2, stride=2),
+        nn.Conv2d(6, 16, kernel_size=5), nn.ReLU(),
+        nn.MaxPool2d(kernel_size=2, stride=2),
+        nn.Flatten(),
+        nn.Linear(16 * 5 * 5, 120), nn.ReLU(),
+        nn.Linear(120, 84), nn.ReLU(),
+        nn.Linear(84, 10))
+    return model
+
