@@ -3,7 +3,8 @@ import torch
 import torch.nn as nn
 import numpy as np
 
-__all__ = ['make_mlp', 'count_model_parameters']
+__all__ = ['make_mlp', 'count_model_parameters', 'make_LeNet']
+
 
 def count_model_parameters(module: nn.Module) -> np.int64:
     """Counts the number of parameters in a torch model."""
@@ -24,10 +25,11 @@ def make_mlp(sizes: Iterable[int], activation: nn.Module = nn.ReLU, output_activ
     )
     """
     layers = []
-    for j in range(len(sizes)-1):
-        act = activation if j < len(sizes)-2 else output_activation
-        layers += [nn.Linear(sizes[j], sizes[j+1]), act()]
+    for j in range(len(sizes) - 1):
+        act = activation if j < len(sizes) - 2 else output_activation
+        layers += [nn.Linear(sizes[j], sizes[j + 1]), act()]
     return nn.Sequential(*layers)
+
 
 def make_LeNet():
     model = nn.Sequential(
@@ -40,4 +42,3 @@ def make_LeNet():
         nn.Linear(120, 84), nn.ReLU(),
         nn.Linear(84, 10))
     return model
-

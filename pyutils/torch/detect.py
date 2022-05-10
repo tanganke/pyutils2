@@ -1,9 +1,20 @@
+# Further Reading:
+# - https://paddlepedia.readthedocs.io/en/latest/tutorials/computer_vision/object_detection/Detection.html
 import torch
+import numpy as np
+from typing import Tuple, List, TypeVar
+import matplotlib.pyplot as plt
 import matplotlib.patches
 
-def box_corner_to_center(boxes:torch.Tensor)->torch.Tensor:
+def box_corner_to_center(boxes: torch.Tensor) -> torch.Tensor:
     """
-    从（左上，右下）转换到（中间，宽度，高度）
+    从（左上，右下）转换到（中间，宽度，高度)
+
+    Args:
+        boxes (torch.Tensor): (N, 4), (左上x, 左上y, 右下x, 右下y)
+
+    Returns:
+        torch.Tensor: (N, 4), (中间x, 中间y, 宽度, 高度)
     """
     x1, y1, x2, y2 = boxes[:, 0], boxes[:, 1], boxes[:, 2], boxes[:, 3]
     cx = (x1 + x2) / 2
@@ -13,9 +24,19 @@ def box_corner_to_center(boxes:torch.Tensor)->torch.Tensor:
     boxes = torch.stack((cx, cy, w, h), axis=-1)
     return boxes
 
-def box_center_to_corner(boxes:torch.Tensor)->torch.Tensor:
+
+bbox_xyxy_to_xywh = box_corner_to_center
+
+
+def box_center_to_corner(boxes: torch.Tensor) -> torch.Tensor:
     """
     从（中间，宽度，高度）转换到（左上，右下）
+
+    Args:
+        boxes (torch.Tensor): (N, 4), (中间x, 中间y, 宽度, 高度)
+
+    Returns:
+        torch.Tensor: (N, 4), (左上x, 左上y, 右下x, 右下y)
     """
     cx, cy, w, h = boxes[:, 0], boxes[:, 1], boxes[:, 2], boxes[:, 3]
     x1 = cx - 0.5 * w
@@ -25,17 +46,22 @@ def box_center_to_corner(boxes:torch.Tensor)->torch.Tensor:
     boxes = torch.stack((x1, y1, x2, y2), axis=-1)
     return boxes
 
-def bbox_to_rect(bbox, *, fill=False, edgecolor='red', linewidth=2, **kwargs)->matplotlib.patches.Rectangle:
+
+bbox_xywh_to_xyxy = box_center_to_corner
+
+
+def bbox_to_rect(bbox, *, fill=False, edgecolor='red', linewidth=2, **kwargs) -> matplotlib.patches.Rectangle:
     """
      将边界框(左上x,左上y,右下x,右下y)格式转换成matplotlib格式：
      ((左上x,左上y),宽,高)
     """
     rect = matplotlib.patches.Rectangle(
-            xy=(bbox[0], bbox[1]), width=bbox[2]-bbox[0], height=bbox[3]-bbox[1],
-            fill=fill, edgecolor=edgecolor, linewidth=linewidth, **kwargs)
+        xy=(bbox[0], bbox[1]), width=bbox[2] - bbox[0], height=bbox[3] - bbox[1],
+        fill=fill, edgecolor=edgecolor, linewidth=linewidth, **kwargs)
     return rect
 
-def multibox_prior(data:torch.Tensor, sizes, ratios)->torch.Tensor:
+
+def multibox_prior(data: torch.Tensor, sizes, ratios) -> torch.Tensor:
     """
     生成以每个像素为中心具有不同形状的锚框, 输出的坐标范围(0,1)
     https://zh-v2.d2l.ai/chapter_computer-vision/anchor.html
@@ -71,34 +97,34 @@ def multibox_prior(data:torch.Tensor, sizes, ratios)->torch.Tensor:
     # 这里的 in_height / in_width 是因为ratio针对的是选框的高宽比
     w = torch.cat((size_tensor * torch.sqrt(ratio_tensor[0]),
                    sizes[0] * torch.sqrt(ratio_tensor[1:])))\
-                   * in_height / in_width  # 处理矩形输入。 
+        * in_height / in_width  # 处理矩形输入。
     h = torch.cat((size_tensor / torch.sqrt(ratio_tensor[0]),
                    sizes[0] / torch.sqrt(ratio_tensor[1:])))
     # 除以2来获得半高和半宽
     anchor_manipulations = torch.stack((-w, -h, w, h)).T.repeat(
-                                        in_height * in_width, 1) / 2
+        in_height * in_width, 1) / 2
 
     # 每个中心点都将有“boxes_per_pixel”个锚框，
     # 所以生成含所有锚框中心的网格，重复了“boxes_per_pixel”次
     out_grid = torch.stack([shift_x, shift_y, shift_x, shift_y],
-                dim=1).repeat_interleave(boxes_per_pixel, dim=0)
+                           dim=1).repeat_interleave(boxes_per_pixel, dim=0)
     output = out_grid + anchor_manipulations
     return output.unsqueeze(0)
 
 
-def box_iou(boxes1: torch.Tensor, boxes2:torch.Tensor)->torch.Tensor:
+def box_iou(boxes1: torch.Tensor, boxes2: torch.Tensor) -> torch.Tensor:
     """
     计算两个锚框或边界框列表中成对的交并比
-    
+
     Args:
         boxes1 (torch.Tensor): (N, 4), (左上x, 左上y, 右下x, 右下y)
         boxes2 (torch.Tensor): (M, 4), (左上x, 左上y, 右下x, 右下y)
-    
+
     Returns:
         torch.Tensor: (N, M)
     """
-    box_area = lambda boxes: ((boxes[:, 2] - boxes[:, 0]) *
-                              (boxes[:, 3] - boxes[:, 1]))
+    def box_area(boxes): return ((boxes[:, 2] - boxes[:, 0]) *
+                                 (boxes[:, 3] - boxes[:, 1]))
     # boxes1,boxes2,areas1,areas2的形状:
     # boxes1：(boxes1的数量,4),
     # boxes2：(boxes2的数量,4),
@@ -116,10 +142,66 @@ def box_iou(boxes1: torch.Tensor, boxes2:torch.Tensor)->torch.Tensor:
     union_areas = areas1[:, None] + areas2 - inter_areas
     return inter_areas / union_areas
 
-def assign_anchor_to_bbox(ground_truth:torch.Tensor,
-                          anchors:torch.Tensor, 
-                          device:torch.device, 
-                          iou_threshold:float=0.5):
+
+def box_iou_xyxy(box1: Tuple[float, float, float, float],
+                 box2: Tuple[float, float, float, float]) -> float:
+    """
+    计算IoU，矩形框的坐标形式为xyxy
+    """
+    # 获取box1左上角和右下角的坐标
+    x1min, y1min, x1max, y1max = box1[0], box1[1], box1[2], box1[3]
+    # 计算box1的面积
+    s1 = (y1max - y1min + 1.) * (x1max - x1min + 1.)
+    # 获取box2左上角和右下角的坐标
+    x2min, y2min, x2max, y2max = box2[0], box2[1], box2[2], box2[3]
+    # 计算box2的面积
+    s2 = (y2max - y2min + 1.) * (x2max - x2min + 1.)
+
+    # 计算相交矩形框的坐标
+    xmin = np.maximum(x1min, x2min)
+    ymin = np.maximum(y1min, y2min)
+    xmax = np.minimum(x1max, x2max)
+    ymax = np.minimum(y1max, y2max)
+    # 计算相交矩形行的高度、宽度、面积
+    inter_h = np.maximum(ymax - ymin + 1., 0.)
+    inter_w = np.maximum(xmax - xmin + 1., 0.)
+    intersection = inter_h * inter_w
+    # 计算相并面积
+    union = s1 + s2 - intersection
+    # 计算交并比
+    iou = intersection / union
+    return iou
+
+
+def box_iou_xywh(box1, box2):
+    """
+    计算IoU，矩形框的坐标形式为xywh
+    """
+    x1min, y1min = box1[0] - box1[2] / 2.0, box1[1] - box1[3] / 2.0
+    x1max, y1max = box1[0] + box1[2] / 2.0, box1[1] + box1[3] / 2.0
+    s1 = box1[2] * box1[3]
+
+    x2min, y2min = box2[0] - box2[2] / 2.0, box2[1] - box2[3] / 2.0
+    x2max, y2max = box2[0] + box2[2] / 2.0, box2[1] + box2[3] / 2.0
+    s2 = box2[2] * box2[3]
+
+    xmin = np.maximum(x1min, x2min)
+    ymin = np.maximum(y1min, y2min)
+    xmax = np.minimum(x1max, x2max)
+    ymax = np.minimum(y1max, y2max)
+    inter_h = np.maximum(ymax - ymin, 0.)
+    inter_w = np.maximum(xmax - xmin, 0.)
+    intersection = inter_h * inter_w
+
+    union = s1 + s2 - intersection
+    iou = intersection / union
+    return iou
+
+
+def assign_anchor_to_bbox(ground_truth: torch.Tensor,
+                          anchors: torch.Tensor,
+                          device: torch.device,
+                          iou_threshold: float = 0.5):
     """
     将最接近的真实边界框分配给锚框
 
@@ -128,7 +210,7 @@ def assign_anchor_to_bbox(ground_truth:torch.Tensor,
         anchors (torch.Tensor)
         device (torch.device): device
         iou_threshold (float): IoU阈值
-    
+
     Returns:
         torch.Tensor
     """
@@ -169,11 +251,10 @@ def show_bboxes(axes, bboxes, labels=None, colors=None):
     colors = _make_list(colors, ['b', 'g', 'r', 'm', 'c'])
     for i, bbox in enumerate(bboxes):
         color = colors[i % len(colors)]
-        rect = bbox_to_rect(bbox.detach().numpy(), edgecolor = color)
+        rect = bbox_to_rect(bbox.detach().numpy(), edgecolor=color)
         axes.add_patch(rect)
         if labels and len(labels) > i:
             text_color = 'k' if color == 'w' else 'w'
             axes.text(rect.xy[0], rect.xy[1], labels[i],
                       va='center', ha='center', fontsize=9, color=text_color,
                       bbox=dict(facecolor=color, lw=0))
-

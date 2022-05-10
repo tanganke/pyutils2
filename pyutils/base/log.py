@@ -1,5 +1,7 @@
+import os
 import sys
 import warnings
+from itertools import count
 
 """A set of common utilities used within the environments. These are
 not intended as API functions, and will not remain stable over time.
@@ -94,3 +96,21 @@ def error(msg):
     if _MIN_LEVEL <= LOG_LEVEL_ERROR:
         print(_colorize("%s: %s" % ("ERROR", msg), "red"), file=sys.stderr)
 
+
+
+def create_log_dir(log_dir: str, try_backup=True) -> None:
+    if os.path.exists(log_dir):
+        if try_backup:
+            if os.path.isdir(log_dir):
+                for i in count(1):
+                    backup_dir = f"{log_dir}.{i}"
+                    if not os.path.exists(backup_dir):
+                        break
+                os.rename(log_dir, backup_dir)
+                warn(f"{log_dir} exists, backup to {backup_dir}")
+            else:
+                raise ValueError(f"{log_dir} exists and is not a directory")
+        else:
+            raise ValueError(f"{log_dir} exists")
+    os.makedirs(log_dir, exist_ok=False)
+    pass

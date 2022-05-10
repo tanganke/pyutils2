@@ -2,6 +2,7 @@ from typing import Iterable, TypeVar, Optional
 
 __all__ = ['verify_str_arg']
 
+
 def iterable_to_str(iterable: Iterable) -> str:
     return "'" + "', '".join([str(item) for item in iterable]) + "'"
 
