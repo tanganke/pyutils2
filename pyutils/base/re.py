@@ -6,13 +6,16 @@ This will match integers:
 - 123
 - -123
 """
-RE_FLOAT = '[+-]?([0-9]*[.])?[0-9]+'
+RE_FLOAT_NORMAL = '[+-]?([0-9]*[.])?[0-9]+'
 """
 This will match:
 - 123
 - -123.456
 - .456
 """
+RE_FLOAT_SCITIFIC = f'{RE_FLOAT_NORMAL}[eE]{RE_INT}'
+RE_FLOAT = f'(({RE_FLOAT_SCITIFIC})|({RE_FLOAT_NORMAL}))'
+
 
 def re_tuple(*elements):
     R"""
@@ -46,12 +49,18 @@ def re_from_expr(x):
 
     Args:
         x: Python object
-    
+
     Returns:
         str: Regular expression
     """
     if isinstance(x, str):
         return x
+    # types
+    elif x == int:
+        return RE_INT
+    elif x == float:
+        return RE_FLOAT
+    # container
     elif isinstance(x, tuple):
         return re_tuple(*tuple(map(re_from_expr, x)))
     elif isinstance(x, list):
@@ -59,4 +68,3 @@ def re_from_expr(x):
     else:
         raise NotImplementedError(
             're_from_expr: not implemented for type {}'.format(type(x)))
-
