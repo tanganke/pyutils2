@@ -1,5 +1,19 @@
 import re
 
+RE_INT = '[+-]?[0-9]+'
+"""
+This will match integers:
+- 123
+- -123
+"""
+RE_FLOAT = '[+-]?([0-9]*[.])?[0-9]+'
+"""
+This will match:
+- 123
+- -123.456
+- .456
+"""
+
 def re_tuple(*elements):
     R"""
     Args:
