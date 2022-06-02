@@ -1,9 +1,11 @@
-from typing import Iterable
+import numpy as np
 import torch
 import torch.nn as nn
-import numpy as np
+from typing import Iterable
 
-__all__ = ['make_mlp', 'count_model_parameters', 'make_LeNet']
+from .real_nvp import RealNVP
+
+__all__ = ['make_mlp', 'count_model_parameters', 'make_LeNet', 'RealNVP']
 
 
 def count_model_parameters(module: nn.Module) -> np.int64:
