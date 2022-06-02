@@ -10,7 +10,7 @@ class pattern_query:
 
     """
 
-    def __init__(self, func, type=None):
+    def __init__(self, func=None, type=None):
         self.func = func
         self.type = type
 
@@ -18,7 +18,9 @@ class pattern_query:
         if self.type is not None:
             if not isinstance(expr, self.type):
                 return False
-        return self.func(expr)
+        if self.func is not None:
+            return self.func(expr)
+        return True
 
 
 def is_expr_match(pattern, expr):
