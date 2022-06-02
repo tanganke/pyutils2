@@ -1,3 +1,26 @@
+class pattern_query:
+    R"""
+    Examples:
+
+        >>> f = pattern_query(lambda x: x==1)
+        >>> f(1)
+        True
+        >>> f(2)
+        False
+
+    """
+
+    def __init__(self, func, type=None):
+        self.func = func
+        self.type = type
+
+    def __call__(self, expr) -> bool:
+        if self.type is not None:
+            if not isinstance(expr, self.type):
+                return False
+        return self.func(expr)
+
+
 def is_expr_match(pattern, expr):
     R"""match pattern with a python expression expr.
 
@@ -11,6 +34,14 @@ def is_expr_match(pattern, expr):
         False
         >>> is_expr_match(((int, (int,)), (int, (int,)), (-1,)), 
                           ((2146, (6,)), (1124, (97,)), (-1,)))
+        True
+
+        match a numpy array whose shape is (1,2)
+
+        >>> import numpy as np
+        >>> is_expr_match(
+                pattern_query(lambda arr: arr.shape==(1,2), np.ndarray),
+                np.zeros((1,2)))
         True
 
     Args:
@@ -29,6 +60,8 @@ def is_expr_match(pattern, expr):
             return False
 
     else:  # instance
+        if isinstance(pattern, pattern_query):
+            return pattern(expr)
         if type(pattern) != type(expr):
             return False
 
@@ -50,4 +83,3 @@ def is_expr_match(pattern, expr):
         else:
             raise NotImplementedError('Unsupported type: {}'.format(type(pattern)))
     return True
-
