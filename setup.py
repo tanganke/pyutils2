@@ -10,5 +10,8 @@ setup(
         'matplotlib',
         'seaborn',
         'tqdm'
+    ],
+    scripts=[
+        'scripts/pyutils_print_json.py'
     ]
 )

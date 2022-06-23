@@ -14,5 +14,3 @@ def listdir_fullpath(dir: str) -> List[str]:
     assert os.path.isdir(dir), "Argument 'dir' must be a Directory"
     names = os.listdir(dir)
     return [os.path.join(dir, name) for name in names]
-
-
