@@ -53,6 +53,7 @@ if __name__ == '__main__':
         return args
 
     args = parse_args()
+    args.file = os.path.expanduser(args.file)
 
     if not os.path.exists(args.file):
         _error_exit(f"File '{args.file}' not found.")
@@ -72,4 +73,4 @@ if __name__ == '__main__':
 
     # print key map
     log.info('key map:')
-    print_json(j, indent=args.indent)
+    print_json(j, indent=args.indent, verbose=args.verbose)
