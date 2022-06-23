@@ -80,7 +80,10 @@ def is_expr_match(pattern, expr):
             if len(pattern) != len(expr):
                 return False
             for k in pattern:
-                if not is_expr_match(pattern[k], expr[k]):
+                try:
+                    if not is_expr_match(pattern[k], expr[k]):
+                        return False
+                except:
                     return False
         else:
             raise NotImplementedError('Unsupported type: {}'.format(type(pattern)))
