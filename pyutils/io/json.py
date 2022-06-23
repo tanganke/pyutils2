@@ -34,5 +34,5 @@ def print_json(j: dict, indent='  '):
                 print(_sprint(f'{indent}] ... {len(j[k])-1} more'))
             else:
                 print(_sprint(k))
-    _print_json(j, level=0)
 
+    _print_json(j, level=0)

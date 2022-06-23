@@ -56,7 +56,6 @@ if __name__ == '__main__':
 
     if not os.path.exists(args.file):
         _error_exit(f"File '{args.file}' not found.")
-        exit(1)
     if not os.path.isfile(args.file):
         _error_exit(f"File '{args.file}' is not a file.")
 
