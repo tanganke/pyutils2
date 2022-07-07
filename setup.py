@@ -7,9 +7,11 @@ setup(
     description='my python toolkit',
     install_requires=[
         'numpy',
+        'pandas',
         'matplotlib',
         'seaborn',
-        'tqdm'
+        'tqdm',
+        'classopt'
     ],
     scripts=[
         'scripts/pyutils_print_json.py'
