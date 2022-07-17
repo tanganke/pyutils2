@@ -18,3 +18,12 @@ def random_seed(seed: Union[int, None], verbose=True):
 
     if verbose:
         log.info(f"setting random seed: {seed}")
+
+
+def to_device(x: Tensor, y: Tensor) -> Tensor:
+    """
+    move `x` to `y.device` if x.device != y.device.
+    """
+    if x.device != y.device:
+        x = x.to(y.device)
+    return x
