@@ -1,5 +1,6 @@
 import os
 import sys
+import time
 import warnings
 from itertools import count
 
@@ -97,7 +98,6 @@ def error(msg):
         print(_colorize("%s: %s" % ("ERROR", msg), "red"), file=sys.stderr)
 
 
-
 def create_log_dir(log_dir: str, try_backup=True) -> None:
     if os.path.exists(log_dir):
         if try_backup:
@@ -114,3 +114,15 @@ def create_log_dir(log_dir: str, try_backup=True) -> None:
             raise ValueError(f"{log_dir} exists")
     os.makedirs(log_dir, exist_ok=False)
     pass
+
+
+class TimeIt:
+    def __init__(self, description: str = None, logger=info):
+        self.logger = logger
+        self.description = description if description is not None else 'timeit'
+
+    def __enter__(self):
+        self.start = time.time()
+
+    def __exit__(self, exc_type, exc_value, tb):
+        self.logger(f'{self.description}: {time.time()-self.start}')
