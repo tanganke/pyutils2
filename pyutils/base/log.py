@@ -126,4 +126,4 @@ class TimeIt:
         self.logger(f'[start] {self.description}')
 
     def __exit__(self, exc_type, exc_value, tb):
-        self.logger(f'[end] {self.description}: {time.time()-self.start}')
+        self.logger(f'[end] {self.description}: {(time.time()-self.start):.2f}s')
