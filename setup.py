@@ -14,6 +14,7 @@ setup(
         'classopt'
     ],
     scripts=[
-        'scripts/pyutils_print_json.py'
+        'scripts/pyutils_print_json.py',
+        'scripts/pyutils_print_h5.py'
     ]
 )
