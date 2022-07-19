@@ -127,3 +127,18 @@ class TimeIt:
 
     def __exit__(self, exc_type, exc_value, tb):
         self.logger(f'[end] {self.description}: {(time.time()-self.start):.2f}s')
+
+
+def log_args(args) -> None:
+    """
+    log CLI arguments to the screen.
+
+    Args:
+        args (argparse.Namespace): CLI arguments.
+    """
+    head = 'CLI arguments:\n'
+    msg = ''
+    for key in vars(args):
+        msg += f'{key} = {getattr(args,key)}\n'
+    info(head + msg)
+
