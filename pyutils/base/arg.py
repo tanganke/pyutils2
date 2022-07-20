@@ -16,6 +16,27 @@ def verify_str_arg(
     valid_values: Iterable[T] = None,
     custom_msg: Optional[str] = None,
 ) -> T:
+    """
+
+    Examples:
+        if you have a function `f` accept `batch_size` as argument, such as:
+
+            f(batch_size='half')
+
+        >>> verify_str_arg(batch_size, 'batch_size', ['half', 'full'])
+
+    Args:
+        value (T): 
+        arg (Optional[str], optional): . Defaults to None.
+        valid_values (Iterable[T], optional): . Defaults to None.
+        custom_msg (Optional[str], optional): . Defaults to None.
+
+    Raises:
+        ValueError: 
+
+    Returns:
+        T: value
+    """
     if not isinstance(value, (str, bytes)):
         if arg is None:
             msg = "Expected type str, but got type {type}."
@@ -32,7 +53,8 @@ def verify_str_arg(
             msg = custom_msg
         else:
             msg = "Unknown value '{value}' for argument {arg}. Valid values are {{{valid_values}}}."
-            msg = msg.format(value=value, arg=arg, valid_values=iterable_to_str(valid_values))
+            msg = msg.format(value=value, arg=arg,
+                             valid_values=iterable_to_str(valid_values))
         raise ValueError(msg)
 
     return value
