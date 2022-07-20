@@ -4,6 +4,7 @@ import math
 __all__ = ['from_bloch_sphere', 'to_bloch_sphere',
            'I', 'X', 'Y', 'Z',
            'Rx', 'Ry', 'Rz',
+           'CNOT', 'Toffoli'
            ]
 
 
@@ -65,3 +66,21 @@ def Ry(theta):
 
 def Rz(theta):
     return np.cos(theta / 2) * I - 1j * np.sin(theta / 2) * Z
+
+
+def CNOT() -> np.ndarray:
+    return np.array([[1, 0, 0, 0],
+                     [0, 1, 0, 0],
+                     [0, 0, 0, 1],
+                     [0, 0, 1, 0]], dtype=np.float)
+
+
+def Toffoli() -> np.ndarray:
+    return np.array([[1, 0, 0, 0, 0, 0, 0, 0],
+                     [0, 1, 0, 0, 0, 0, 0, 0],
+                     [0, 0, 1, 0, 0, 0, 0, 0],
+                     [0, 0, 0, 1, 0, 0, 0, 0],
+                     [0, 0, 0, 0, 1, 0, 0, 0],
+                     [0, 0, 0, 0, 0, 1, 0, 0],
+                     [0, 0, 0, 0, 0, 0, 0, 1],
+                     [0, 0, 0, 0, 0, 0, 1, 0]], dtype=np.float)
