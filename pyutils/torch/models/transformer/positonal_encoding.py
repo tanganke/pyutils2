@@ -6,8 +6,13 @@ import torch.nn as nn
 
 class positonal_encoding(nn.Module):
     """
-    PE(pos, 2i)   = sin( pos/10000^(2i/d_model) )
-    PE(pos, 2i+1) = cos( pos/10000^(2i/d_model) )
+    R论文中的定义：
+        PE(pos, 2i)   = sin( pos/10000^(2i/d_model) )
+        PE(pos, 2i+1) = cos( pos/10000^(2i/d_model) )
+
+    这个函数的定义：
+        PE(pos, 2i)   = sin( pos/(2*max_len)^(2i/d_model) )
+        PE(pos, 2i+1) = cos( pos/(2*max_len)^(2i/d_model) )
 
     where:
         pos : token(word)在序列(句子)中的位置。

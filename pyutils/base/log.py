@@ -8,11 +8,6 @@ from itertools import count
 not intended as API functions, and will not remain stable over time.
 """
 
-__all__ = [
-    'LOG_LEVEL_DEBUG', 'LOG_LEVEL_INFO', 'LOG_LEVEL_WARN', 'LOG_LEVEL_ERROR', 'LOG_LEVEL_DISABLED',
-    'set_log_level', 'debug', 'info', 'warn', 'deprecation', 'error'
-]
-
 _color2num = dict(
     gray=30,
     red=31,
@@ -141,4 +136,3 @@ def log_args(args) -> None:
     for key in vars(args):
         msg += f'{key} = {getattr(args,key)}\n'
     info(head + msg)
-

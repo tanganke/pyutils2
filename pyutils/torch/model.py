@@ -2,10 +2,27 @@ import numpy as np
 import torch
 import torch.nn as nn
 from typing import Iterable
+from pyutils.base.arg import verify_str_arg
 
-from .real_nvp import RealNVP
+__all__ = ['make_mlp', 'count_model_parameters', 'make_LeNet', 'make_activation']
 
-__all__ = ['make_mlp', 'count_model_parameters', 'make_LeNet', 'RealNVP']
+
+_activation_factory = {'relu': nn.ReLU, 'tanh': nn.Tanh,
+                       'glu': nn.GLU, 'elu': nn.ELU,
+                       'celu': nn.CELU, 'identity': nn.Identity}
+
+
+def make_activation(name: str) -> nn.Module:
+    """make activation layer by `name`
+
+    Args:
+        name (str): 'relu', 'tanh', 'glu', 'elu', 'celu' or 'identity'
+
+    Returns:
+        nn.Module: activation layer
+    """
+    verify_str_arg(name, 'name', _activation_factory.keys())
+    return _activation_factory[name]()
 
 
 def count_model_parameters(module: nn.Module) -> np.int64:
