@@ -1,6 +1,18 @@
 from typing import Iterable, TypeVar, Optional
 
-__all__ = ['verify_str_arg']
+
+def default(default_value, arg):
+    r"""
+    Return `default_value` if `arg` is `None`, else `arg`
+
+    Args:
+        default_value
+        arg
+    """
+    if arg is None:
+        return default_value
+    else:
+        return arg
 
 
 def _iterable_to_str(iterable: Iterable) -> str:
@@ -17,7 +29,7 @@ def verify_str_arg(
     custom_msg: Optional[str] = None,
     to_lower: bool = False
 ) -> T:
-    """
+    r"""
     check is string argument `value` with name `arg` in `valid_values`, raise `ValueError` if failed.
 
     Examples:
