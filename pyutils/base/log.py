@@ -136,3 +136,18 @@ def log_args(args) -> None:
     for key in vars(args):
         msg += f'{key} = {getattr(args,key)}\n'
     info(head + msg)
+
+
+def log_cmd(file: str = None) -> str:
+    """
+    log cmd
+
+    Args:
+        file(str): if file is not None, append to it with a timestamp. 
+    """
+    cmd = ' '.join(sys.argv)
+    if file is not None:
+        if not os.path.exists(os.path.dirname(file)):
+            os.makedirs(os.path.dirname(file))
+        with open(file, 'a') as f:
+            f.write(f'[{time.ctime()}] ' + cmd + '\n')
