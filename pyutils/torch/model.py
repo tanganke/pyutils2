@@ -31,7 +31,9 @@ def count_model_parameters(module: nn.Module) -> np.int64:
     return n
 
 
-def make_mlp(sizes: Iterable[int], activation: nn.Module = nn.ReLU, output_activation: nn.Module = nn.Identity) -> nn.Sequential:
+def make_mlp(sizes: Iterable[int],
+             activation: nn.Module = nn.ReLU,
+             output_activation: nn.Module = nn.Identity) -> nn.Sequential:
     """
     Example:
     >>> mlp = make_mlp([64, 32, 32], nn.ReLU, nn.Softmax)
@@ -50,7 +52,17 @@ def make_mlp(sizes: Iterable[int], activation: nn.Module = nn.ReLU, output_activ
     return nn.Sequential(*layers)
 
 
-def make_LeNet():
+def make_LeNet(num_classes=10):
+    """
+    LeNet:
+        input: (batch_size, 1, 28, 28)
+
+    Args:
+        num_classes (int, optional): _description_. Defaults to 10.
+
+    Returns:
+        nn.Module: LeNet
+    """
     model = nn.Sequential(
         nn.Conv2d(1, 6, kernel_size=5, padding=2), nn.ReLU(),
         nn.MaxPool2d(kernel_size=2, stride=2),
@@ -59,5 +71,5 @@ def make_LeNet():
         nn.Flatten(),
         nn.Linear(16 * 5 * 5, 120), nn.ReLU(),
         nn.Linear(120, 84), nn.ReLU(),
-        nn.Linear(84, 10))
+        nn.Linear(84, num_classes))
     return model
