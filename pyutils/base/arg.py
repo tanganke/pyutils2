@@ -3,11 +3,19 @@ from typing import Iterable, TypeVar, Optional
 
 def default(default_value, arg):
     r"""
-    Return `default_value` if `arg` is `None`, else `arg`
+    Return `default_value` if `arg` is `None`, else `arg`.
+
+    Examples:
+
+        set `batch_size` to 32 if `args.batch_size` is `None`, else `args.batch_size`
+
+        .. code-block::
+
+            batch_size = default(32, args.batch_size)
 
     Args:
-        default_value
-        arg
+        default_value (Any):
+        arg (Any):
     """
     if arg is None:
         return default_value
@@ -34,10 +42,12 @@ def verify_str_arg(
 
     Examples:
         if you have a function `f` accept `batch_size` as argument, such as:
+        
+        .. code-block::
 
-            f(batch_size='half')
-
-        >>> verify_str_arg(batch_size, 'batch_size', ['half', 'full'])
+            def f(batch_size='half'):
+                verify_str_arg(batch_size, 'batch_size', ['half', 'full'])
+                ...
 
     Args:
         value (T): 

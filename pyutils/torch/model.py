@@ -36,15 +36,17 @@ def make_mlp(sizes: Iterable[int],
              output_activation: nn.Module = nn.Identity) -> nn.Sequential:
     """
     Example:
-    >>> mlp = make_mlp([64, 32, 32], nn.ReLU, nn.Softmax)
-    >>> mlp
-    Sequential(
-        (0): Linear(in_features=64, out_features=32, bias=True)
-        (1): ReLU()
-        (2): Linear(in_features=32, out_features=32, bias=True)
-        (3): Softmax(dim=None)
-    )
+    
+        >>> mlp = make_mlp([64, 32, 32], nn.ReLU, nn.Softmax)
+        >>> mlp
+        Sequential(
+            (0): Linear(in_features=64, out_features=32, bias=True)
+            (1): ReLU()
+            (2): Linear(in_features=32, out_features=32, bias=True)
+            (3): Softmax(dim=None)
+        )
     """
+
     layers = []
     for j in range(len(sizes) - 1):
         act = activation if j < len(sizes) - 2 else output_activation

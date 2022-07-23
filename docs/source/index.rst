@@ -10,6 +10,9 @@ Welcome to pyutils's documentation!
    :maxdepth: 2
    :caption: Contents:
 
+   log
+   args
+   wolfram/index
    api/pyutils
 
 Indices and tables
@@ -17,4 +20,6 @@ Indices and tables
 
 * :ref:`genindex`
 * :ref:`modindex`
-* :ref:`search`
+
+.. * :ref:`search`
+

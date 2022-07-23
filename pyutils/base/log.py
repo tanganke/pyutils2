@@ -4,9 +4,6 @@ import time
 import warnings
 from itertools import count
 
-"""A set of common utilities used within the environments. These are
-not intended as API functions, and will not remain stable over time.
-"""
 
 _color2num = dict(
     gray=30,
@@ -22,7 +19,8 @@ _color2num = dict(
 
 
 def _colorize(string, color, bold=False, highlight=False):
-    """Return string surrounded by appropriate terminal color codes to
+    """
+    Return string surrounded by appropriate terminal color codes to
     print colorized text.  Valid colors: gray, red, green, yellow,
     blue, magenta, cyan, white, crimson
     """
@@ -39,21 +37,34 @@ def _colorize(string, color, bold=False, highlight=False):
 
 
 LOG_LEVEL_DEBUG = 10
+'DEBUG'
 LOG_LEVEL_INFO = 20
+'INFO, with green color'
 LOG_LEVEL_WARN = 30
+'warn'
 LOG_LEVEL_ERROR = 40
+'error'
 LOG_LEVEL_DISABLED = 50
+'disable log'
 
 _MIN_LEVEL = 10
 
 
 def set_log_level(level=LOG_LEVEL_DEBUG):
-    """Set logging threshold on current logger.
+    """
+    Set logging threshold on current logger.
+    The default log level is `LOG_LEVEL_DEBUG`
+
+    log levels:
+
+    - :py:const:`LOG_LEVEL_DEBUG`
+    - :py:const:`LOG_LEVEL_INFO`
+    - :py:const:`LOG_LEVEL_WARN`
+    - :py:const:`LOG_LEVEL_ERROR`
+    - :py:const:`LOG_LEVEL_DISABLED`
+
     Args:
-        level (int): 
-            one of ``LOG_LEVEL_DEBUG``, ``LOG_LEVEL_INFO``, 
-            ``LOG_LEVEL_WARN``, ``LOG_LEVEL_ERROR``, ``LOG_LEVEL_DISABLED``.
-            Defaults to ``LOG_LEVEL_DEBUG``.
+        level (int): Defaults to :py:const:`LOG_LEVEL_DEBUG`.
     """
     global _MIN_LEVEL
     _MIN_LEVEL = level
@@ -85,6 +96,9 @@ def warn(msg, category=None, stacklevel=1):
 
 
 def deprecation(msg):
+    """
+    has the same log level as :py:func:`warn`.
+    """
     warn(msg, category=DeprecationWarning, stacklevel=2)
 
 
@@ -112,6 +126,16 @@ def create_log_dir(log_dir: str, try_backup=True) -> None:
 
 
 class TimeIt:
+    """
+    Examples:
+
+        .. code-block::
+
+            with TimeIt('msg'):
+                ... # do_something
+
+    """
+
     def __init__(self, description: str = None, logger=info):
         self.logger = logger
         self.description = description if description is not None else 'timeit'
@@ -124,9 +148,15 @@ class TimeIt:
         self.logger(f'[end] {self.description}: {(time.time()-self.start):.2f}s')
 
 
-def log_args(args) -> None:
+def log_args(args, logger=info) -> None:
     """
     log CLI arguments to the screen.
+
+    Examples:
+
+        .. code-block::
+
+            log_args(args, logger=debug)
 
     Args:
         args (argparse.Namespace): CLI arguments.
@@ -135,12 +165,20 @@ def log_args(args) -> None:
     msg = ''
     for key in vars(args):
         msg += f'{key} = {getattr(args,key)}\n'
-    info(head + msg)
+    logger(head + msg)
 
 
 def log_cmd(file: str = None) -> str:
     """
     log cmd
+
+    Examples:
+
+        log commd line input to a history file.
+
+        .. code-block::
+
+            log_cmd('logs/history.txt')
 
     Args:
         file(str): if file is not None, append to it with a timestamp. 
