@@ -1,3 +1,4 @@
+#! /usr/bin/env python3
 """
 usage: pyutils_print_h5.py [-h] [--indent INDENT] file
 
@@ -9,7 +10,6 @@ optional arguments:
   --indent INDENT, -i INDENT
                         indent string 
 """
-#! /usr/bin/env python3
 import os
 import sys
 from pyutils.base import log

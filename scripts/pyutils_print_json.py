@@ -1,3 +1,4 @@
+#! /usr/bin/env python3
 """
 usage: pyutils_print_json.py [-h] [--indent INDENT] [--verbose] file
 
@@ -10,7 +11,6 @@ optional arguments:
                         indent string
   --verbose, -v         is verbose? e.g. memory usage. 
 """
-#! /usr/bin/env python3
 import os
 import sys
 from pyutils.base import log
