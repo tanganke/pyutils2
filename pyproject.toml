@@ -9,3 +9,5 @@ name = "pyutils"
 authors = [{name = "Anke Tang", email = "tang.anke@foxmail.com"}]
 dynamic = ["version", "description"]
 
+[project.urls]
+"Homepage"="https://github.com/tanganke/pyutils"
