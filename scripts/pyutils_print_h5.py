@@ -1,3 +1,14 @@
+"""
+usage: pyutils_print_h5.py [-h] [--indent INDENT] file
+
+positional arguments:
+  file                  path of hdf5 file
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --indent INDENT, -i INDENT
+                        indent string 
+"""
 #! /usr/bin/env python3
 import os
 import sys

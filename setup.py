@@ -1,8 +1,9 @@
 from setuptools import setup
+from pyutils import __version__
 
 setup(
     name='pyutils',
-    version='0.1.0',
+    version=__version__,
     author='Anke Tang',
     description='my python toolkit',
     install_requires=[

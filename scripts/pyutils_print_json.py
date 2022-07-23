@@ -1,3 +1,15 @@
+"""
+usage: pyutils_print_json.py [-h] [--indent INDENT] [--verbose] file
+
+positional arguments:
+  file                  path of json file
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --indent INDENT, -i INDENT
+                        indent string
+  --verbose, -v         is verbose? e.g. memory usage. 
+"""
 #! /usr/bin/env python3
 import os
 import sys

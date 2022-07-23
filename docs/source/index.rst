@@ -12,8 +12,8 @@ Welcome to pyutils's documentation!
 
    log
    args
-   wolfram/index
-   api/pyutils
+   scripts
+   3rd_paties
 
 Indices and tables
 ==================

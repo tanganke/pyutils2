@@ -1,8 +1,8 @@
 # Python project metadata that makes it installable. 
 # Useful for automatic documentation generation from sources.
-[build-system]
-requires = ["flit_core >=3.2,<4"]
-build-backend = "flit_core.buildapi"
+# [build-system]
+# requires = ["flit_core >=3.2,<4"]
+# build-backend = "flit_core.buildapi"
 
 [project]
 name = "pyutils"

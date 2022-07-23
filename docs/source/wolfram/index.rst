@@ -1,5 +1,5 @@
-Wolfram
-=========
+Wolfram Language
+======================
 
 .. currentmodule:: 
     pyutils.wolfram
