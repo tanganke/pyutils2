@@ -3,6 +3,9 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
+.. Cross-referencing Python objects¶
+   https://www.sphinx-doc.org/en/master/usage/restructuredtext/domains.html#cross-referencing-python-objects
+
 Welcome to pyutils's documentation!
 ===================================
 
@@ -12,7 +15,6 @@ Welcome to pyutils's documentation!
 
    log
    args
-   scripts
    3rd_paties
 
 Indices and tables

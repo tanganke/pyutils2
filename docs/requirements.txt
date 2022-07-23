@@ -1,4 +1,3 @@
 furo
 wolframclient
 pandas
-git+https://github.com/tanganke/pyutils.git
