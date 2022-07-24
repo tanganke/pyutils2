@@ -1,10 +1,11 @@
+""" 
+construct some simple models.
+"""
 import numpy as np
 import torch
 import torch.nn as nn
 from typing import Iterable
 from pyutils.base.arg import verify_str_arg
-
-__all__ = ['make_mlp', 'count_model_parameters', 'make_LeNet', 'make_activation']
 
 
 _activation_factory = {'relu': nn.ReLU, 'tanh': nn.Tanh,
@@ -36,7 +37,7 @@ def make_mlp(sizes: Iterable[int],
              output_activation: nn.Module = nn.Identity) -> nn.Sequential:
     """
     Example:
-    
+
         >>> mlp = make_mlp([64, 32, 32], nn.ReLU, nn.Softmax)
         >>> mlp
         Sequential(

@@ -39,6 +39,3 @@ def binary_accuracy(tp: float, fp: float, fn: float, tn: float) -> float:
     计算二分类的准确率
     """
     return (tp + tn) / (tp + fp + fn + tn)
-
-
-

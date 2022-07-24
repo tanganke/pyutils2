@@ -15,6 +15,7 @@ Welcome to pyutils's documentation!
 
    log
    args
+   io/index
    3rd_paties
 
 Indices and tables

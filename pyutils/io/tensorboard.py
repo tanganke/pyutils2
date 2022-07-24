@@ -1,13 +1,15 @@
-
+"""
+functions deal with tensorboard logs.    
+"""
 from tensorboard.backend.event_processing import event_accumulator
 import numpy as np
 import pandas as pd
-from typing import List, Iterable
+from typing import List, Iterable, Dict
 
 
 def parse_tensorboard_as_dict(path: str, scalars: Iterable[str]):
     """
-    returns a dictionary of pandas dataframes for each requested scalar
+    returns a dictionary of pandas dataframes for each requested scalar.
 
     Args:
         path(str): A file path to a directory containing tf events files, or a single
@@ -31,14 +33,17 @@ def parse_tensorboard_as_dict(path: str, scalars: Iterable[str]):
 
 def parse_tensorboard_as_list(path: str, scalars: Iterable[str]):
     """
-    returns a list of pandas dataframes for each requested scalar
+    returns a list of pandas dataframes for each requested scalar.
 
-    see also: `parse_tensorboard_as_dict`
+    see also: :py:func:`parse_tensorboard_as_dict`
 
     Args:
         path(str): A file path to a directory containing tf events files, or a single
                    tf events file. The accumulator will load events from this path.
         scalars:   scalars
+
+    Returns:
+        List[pandas.DataFrame]: a list of pandas dataframes for each requested scalar.
     """
     d = parse_tensorboard_as_dict(path, scalars)
     return [d[s] for s in scalars]

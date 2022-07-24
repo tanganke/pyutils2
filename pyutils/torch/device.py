@@ -8,9 +8,6 @@ import torch
 
 from ..base import log
 
-__all__ = ['device', 'auto_select_gpu']
-
-
 def device(index: int) -> torch.device:
     """
     选择Torch硬件设备
@@ -39,7 +36,7 @@ def device(index: int) -> torch.device:
 
 def auto_select_gpu(mem_bound=500, utility_bound=0, gpus=(0, 1, 2, 3, 4, 5, 6, 7), num_gpu=1, selected_gpus=None):
     """
-    Example:
+    Examples:
 
         >>> selected_gpus = auto_select_gpu(num_gpu=2)
 
