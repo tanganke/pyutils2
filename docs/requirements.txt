@@ -1,3 +1,9 @@
 furo
 wolframclient
 pandas
+classopt
+matplotlib
+torch
+torchvision
+torchaudio
+tensorboard
