@@ -1,5 +1,8 @@
-from .common import *
 from . import detect
+import torch
+import torch.utils.data
+from torch import Tensor
+import random
 
 from .device import *
 from .model import *
@@ -36,7 +39,7 @@ def to_device(x: Tensor, y: Tensor) -> Tensor:
     return x
 
 
-def draw_samples(dataset: Dataset, n: int):
+def draw_samples(dataset: torch.utils.data.Dataset, n: int):
     """
     draw ``n`` samples from dataset.
 
