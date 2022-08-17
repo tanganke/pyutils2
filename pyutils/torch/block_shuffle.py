@@ -16,14 +16,13 @@ import torch
 from torch import Tensor
 import pyutils.base.log as log
 from pyutils.torch import to_device
-
+import pyutils.cppext as cppext
 # %%
 
 
-def _get_pixel_shuffle_index(C, H, W, device):
+def get_pixel_shuffle_index(C, H, W, device=torch.device('cpu')):
     index = torch.empty((C, H * W), dtype=torch.int64)
-    for i in range(H * W):
-        index[:, i] = torch.randperm(C)
+    cppext.get_pixel_shuffle_index_i64(index.numpy())
     index = index.view(C, H, W)
 
     if index.device != device:
@@ -31,7 +30,7 @@ def _get_pixel_shuffle_index(C, H, W, device):
     return index
 
 
-def _pixel_shuffle(img: Tensor) -> Tensor:
+def pixel_shuffle(img: Tensor) -> Tensor:
     """
     per-pixel channel shuffle.
 
@@ -45,7 +44,7 @@ def _pixel_shuffle(img: Tensor) -> Tensor:
     if C == 1:
         return img
 
-    index = _get_pixel_shuffle_index(C, H, W, img.device)
+    index = get_pixel_shuffle_index(C, H, W, img.device)
 
     ret = img.gather(0, index)
     return ret
@@ -56,15 +55,14 @@ def batch_pixel_shuffle(batch_img: Tensor) -> Tensor:
     if C == 1:
         return batch_img
 
-    index = _get_pixel_shuffle_index(C, H, W, batch_img.device)
-
     ret = torch.empty_like(batch_img)
     for i in range(N):
-        ret[i] = batch_img[i].gather(0, index)
+        ret[i] = pixel_shuffle(batch_img[i])
+
     return ret
 
 
-def _get_block_shuffle_index(C, H, W, block_size, device):
+def get_block_shuffle_index(C, H, W, block_size, device=torch.device('cpu')):
     block_H, block_W = H // block_size, W // block_size
 
     block_idx = torch.randperm(block_H * block_W).view(block_H, block_W)
@@ -105,11 +103,11 @@ def block_shuffle(img: Tensor, block_size: int, pixel_shuffle: bool = False) -> 
     """
     C, H, W = img.size()
     assert H % block_size == W % block_size == 0
-    pixel_idx = _get_block_shuffle_index(C, H, W, block_size, img.device)
+    pixel_idx = get_block_shuffle_index(C, H, W, block_size, img.device)
     ret = img.view(C, H * W).gather(1, pixel_idx).view(C, H, W)
 
     if pixel_shuffle:
-        ret = _pixel_shuffle(ret)
+        ret = pixel_shuffle(ret)
     return ret
 
 
@@ -128,15 +126,11 @@ def batch_block_shuffle(batch_img: Tensor, block_size: int, pixel_shuffle=False)
     assert batch_img.dim() == 4, \
         f'`batch_img` should be in shape as (#batch, channel, H, W), but get {batch_img.size()}'
     N, C, H, W = batch_img.size()
-    pixel_idx = _get_block_shuffle_index(C, H, W, block_size, batch_img.device)
     batch_ret = torch.empty_like(batch_img)
 
-    for i in range(batch_img.size(0)):
-        batch_ret[i] = batch_img[i].view(
-            C, H * W).gather(1, pixel_idx).view(C, H, W)
+    for i in range(N):
+        batch_ret[i] = block_shuffle(batch_img[i], block_size, pixel_shuffle)
 
-    if pixel_shuffle:
-        batch_ret = batch_pixel_shuffle(batch_ret)
     return batch_ret
 
 # %% TEST

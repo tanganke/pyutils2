@@ -11,3 +11,10 @@ dynamic = ["version", "description"]
 
 [project.urls]
 "Homepage"="https://github.com/tanganke/pyutils"
+
+[build-system]
+requires = [
+    "setuptools>=42",
+    "pybind11>=2.10.0",
+]
+build-backend = "setuptools.build_meta"
