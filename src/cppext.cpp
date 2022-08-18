@@ -13,6 +13,7 @@ PYBIND11_MODULE(cppext, m) {
            :toctree: _generate
     )pbdoc";
 
+  // block_shuffle.hpp
   m.def("get_pixel_shuffle_index_i64", &get_pixel_shuffle_index_i64);
 
 #ifdef VERSION_INFO
